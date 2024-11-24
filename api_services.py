@@ -65,7 +65,7 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
     data = query.data
 
     if data == 'about_us':
-        await update_message_in_task(query, *display_about_message())
+        await update_message_in_task(query, *display_about_message(), disable_web_page_preview=True, parse_mode="Markdown")
     elif data == 'authorize':
         await handle_authorization_process(query, user)
     elif data == 'check_authorization':
