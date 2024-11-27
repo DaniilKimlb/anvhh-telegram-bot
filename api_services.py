@@ -1,5 +1,4 @@
 import asyncio
-from datetime import datetime, timedelta, date
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from telegram.ext import ContextTypes
 from user_models import UserModel
@@ -20,14 +19,6 @@ from message_builders import (
 STATE_SET_KEYWORDS = 1
 STATE_SET_COVER_LETTER = 2
 STATE_ENTERING_PHONE = 3
-
-# Уровни подписки
-subscription_levels = {
-    'basic': '💼 *Минимум*',
-    'premium': '🚀 *Стандарт*',
-    'vip': '👑 *Премиум*',
-    'trial': '🎁 *Пробный*',
-}
 
 async def update_message_in_task(query: CallbackQuery, text: str, reply_markup: InlineKeyboardMarkup = None, parse_mode=None, disable_web_page_preview=None) -> None:
     """Асинхронно редактирует сообщение без блокировки основного цикла событий."""
@@ -176,9 +167,6 @@ async def process_vacancy_responses(query: CallbackQuery, context: ContextTypes.
 async def select_resume(query: CallbackQuery, data: str, user: UserModel):
     """Позволяет выбрать резюме для отклика."""
     resume_id = data.split('_')[-1]
-    is_owner = await user.is_resume_owner(resume_id)
-    if not is_owner:
-        user.set('subscription_level', None)
     user.set('resume_id', resume_id)
     await user.save()
     await update_message_in_task(
